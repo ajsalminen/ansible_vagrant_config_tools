@@ -32,3 +32,9 @@
         line="{{vagrant_dev_ip_network}}.{{item.0 + vagrant_dev_ip_first}} {{vagrant_dev_prefix}}.{{item.1}}.{{vagrant_dev_tld}}"
       sudo: yes
       with_indexed_items: groups['all']
+
+    - name: Write vagrantfile for hosts
+      local_action: >
+        template
+        src=Vagrantfile.j2
+        dest=./Vagrantfile
