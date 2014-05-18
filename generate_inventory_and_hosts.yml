@@ -1,0 +1,34 @@
+---
+
+- hosts: localhost
+  gather_facts: no
+  connection: local
+  # sudo: yes
+  vars_files:
+    - vars/vagrant_dev.yml
+  tasks:
+    - name: Copy production inventory for modification
+      local_action: >
+        copy
+        src={{vagrant_dev_production_inventory}}
+        dest=./{{vagrant_dev_inventory}}
+
+    - name: Generate inventory file based on production inventory
+      local_action: >
+        command
+        sed -ri 's#^\s*{{item.1|replace('.','\.')}}(\s+.*)*#
+        {{vagrant_dev_prefix}}.{{item.1}}.{{vagrant_dev_tld}}
+        ansible_ssh_host={{vagrant_dev_ip_network}}.{{item.0 + vagrant_dev_ip_first}}#g'
+        ./{{vagrant_dev_inventory}}
+      with_indexed_items: groups['all']
+
+
+    - name: Add vagrant hosts to local /etc/hosts
+      local_action: >
+        lineinfile
+        state=present
+        dest=/etc/hosts
+        regexp='^(?:[0-9]{1,3}\.){3}[0-9]{1,3} {{vagrant_dev_prefix}}\.{{item.1}}\.{{vagrant_dev_tld}}$'
+        line="{{vagrant_dev_ip_network}}.{{item.0 + vagrant_dev_ip_first}} {{vagrant_dev_prefix}}.{{item.1}}.{{vagrant_dev_tld}}"
+      sudo: yes
+      with_indexed_items: groups['all']
