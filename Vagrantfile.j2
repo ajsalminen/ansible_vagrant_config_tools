@@ -22,6 +22,17 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 {% endif %}
 {% endfor %}
 
+{% for host in vagrant_dev_additional_vms: %}
+  config.vm.define "{{vagrant_dev_prefix}}.{{host.name}}.{{vagrant_dev_tld}}" do |{{host.name|replace('.','_')}}|
+  {{host.name|replace('.','_')}}.vm.hostname = "{{vagrant_dev_prefix}}.{{host.name}}.{{vagrant_dev_tld}}"
+  {{host.name|replace('.','_')}}.vm.network "private_network", ip: "{{vagrant_dev_additional_ip_network}}.{{loop.index0 + vagrant_dev_additional_ip_first}}"
+  {% if vagrant_dev_boxes[host.name] is defined: %}
+  {{host.name|replace('.','_')}}.vm.box = "{{vagrant_dev_boxes[host.name]}}"
+  {% endif %}
+  end
+{% endfor %}
+
+
   # Every Vagrant virtual environment requires a box to build off of.
   config.vm.box = "{{vagrant_dev_default_box}}"
   # config.vm.box = "puppetlabs/debian-6.0.9-64-nocm"

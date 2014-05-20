@@ -33,8 +33,38 @@
       sudo: yes
       with_indexed_items: groups['all']
 
+    - name: Add vagrant hosts to local /etc/hosts
+      local_action: >
+        lineinfile
+        state=present
+        dest=/etc/hosts
+        regexp='^(?:[0-9]{1,3}\.){3}[0-9]{1,3} {{vagrant_dev_prefix}}\.{{item.1.name}}\.{{vagrant_dev_tld}}$'
+        line="{{vagrant_dev_additional_ip_network}}.{{item.0 + vagrant_dev_additional_ip_first}} {{vagrant_dev_prefix}}.{{item.1.name}}.{{vagrant_dev_tld}}"
+      sudo: yes
+      with_indexed_items: vagrant_dev_additional_vms
+
     - name: Write vagrantfile for hosts
       local_action: >
         template
         src=Vagrantfile.j2
         dest=./Vagrantfile
+
+    # Ansible issue with inserting to EOF requires specifying insertbefore here.
+    - name: Insert additional vm groups to inventory
+      lineinfile:
+        dest: ./inventory
+        regexp: '^\[{{item.1}}\].*'
+        line: "[{{item.1}}]\n\n"
+        insertbefore: BOF
+      with_subelements:
+        - vagrant_dev_additional_vms
+        - groups
+
+    - name: Insert additional vms to inventory
+      lineinfile:
+        dest: ./inventory
+        insertafter: '^\[{{item.1}}\]'
+        line: "{{vagrant_dev_prefix}}.{{item.0.name}}.{{vagrant_dev_tld}} # group: {{item.1}}"
+      with_subelements:
+        - vagrant_dev_additional_vms
+        - groups
