@@ -1,0 +1,24 @@
+---
+vagrant_dev_ip_network: 192.168.33
+vagrant_dev_ip_first: 2
+vagrant_dev_additional_ip_network: 192.168.34
+vagrant_dev_additional_ip_first: 2
+vagrant_dev_production_inventory: ~/projektit/ansible/kifi-playbooks/production
+vagrant_dev_inventory: inventory
+vagrant_dev_tld: test # See http://tools.ietf.org/html/rfc2606
+# vagrant_dev_prefix: v
+vagrant_dev_default_box: chef/debian-7.4
+vagrant_dev_playbook_path: /home/anttis/projektit/ansible/kifi-playbooks/site.yml
+vagrant_dev_boxes:
+  okariino.fi: puppetlabs/debian-6.0.9-64-nocm
+vagrant_dev_additional_vms:
+  - name: mail2.kirjastot.fi
+    groups:
+      - servers
+      - mail
+  - name: mail
+    groups:
+      - servers
+      - mail
+      # - nagios-ssh-monitored
+hosts_file_path: /home/anttis/projektit/vagrant/vagrant_ansible_dev/hosts.j2

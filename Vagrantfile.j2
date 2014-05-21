@@ -12,8 +12,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 {% for host in groups['all']: %}
 {% if host != 'localhost':
 %}
-  config.vm.define "{{vagrant_dev_prefix}}.{{host}}.{{vagrant_dev_tld}}" do |{{host|replace('.','_')}}|
-  {{host|replace('.','_')}}.vm.hostname = "{{vagrant_dev_prefix}}.{{host}}.{{vagrant_dev_tld}}"
+  config.vm.define "{{host}}.{{vagrant_dev_tld}}" do |{{host|replace('.','_')}}|
+  {{host|replace('.','_')}}.vm.hostname = "{{host}}.{{vagrant_dev_tld}}"
   {{host|replace('.','_')}}.vm.network "private_network", ip: "{{vagrant_dev_ip_network}}.{{loop.index0 + vagrant_dev_ip_first}}"
   {% if vagrant_dev_boxes[host] is defined: %}
   {{host|replace('.','_')}}.vm.box = "{{vagrant_dev_boxes[host]}}"
@@ -23,8 +23,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 {% endfor %}
 
 {% for host in vagrant_dev_additional_vms: %}
-  config.vm.define "{{vagrant_dev_prefix}}.{{host.name}}.{{vagrant_dev_tld}}" do |{{host.name|replace('.','_')}}|
-  {{host.name|replace('.','_')}}.vm.hostname = "{{vagrant_dev_prefix}}.{{host.name}}.{{vagrant_dev_tld}}"
+  config.vm.define "{{host.name}}.{{vagrant_dev_tld}}" do |{{host.name|replace('.','_')}}|
+  {{host.name|replace('.','_')}}.vm.hostname = "{{host.name}}.{{vagrant_dev_tld}}"
   {{host.name|replace('.','_')}}.vm.network "private_network", ip: "{{vagrant_dev_additional_ip_network}}.{{loop.index0 + vagrant_dev_additional_ip_first}}"
   {% if vagrant_dev_boxes[host.name] is defined: %}
   {{host.name|replace('.','_')}}.vm.box = "{{vagrant_dev_boxes[host.name]}}"
