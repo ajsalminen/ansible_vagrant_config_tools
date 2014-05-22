@@ -48,7 +48,7 @@
         file
         path=./hosts.d/20_hosts.j2
         state=touch
-
+      sudo: no
 
     - name: Add vagrant hosts to a hosts fragment file
       local_action: >
@@ -76,6 +76,9 @@
         src=./hosts.d
         dest=./hosts.j2
 
+    - name: Install /etc/vagrant_hosts for completion
+      copy: src=./hosts.d/20_hosts.j2 dest=/etc/vagrant_hosts owner=root group=root mode=0644
+      sudo: yes
 
 
 
