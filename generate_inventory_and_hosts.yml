@@ -77,7 +77,7 @@
         dest=./hosts.j2
 
     - name: Install /etc/vagrant_hosts for completion
-      copy: src=./hosts.d/20_hosts.j2 dest=/etc/vagrant_hosts owner=root group=root mode=0644
+      shell: cut -f 2 -d ' ' ./hosts.d/20_hosts.j2 > /etc/vagrant_hosts
       sudo: yes
 
 
