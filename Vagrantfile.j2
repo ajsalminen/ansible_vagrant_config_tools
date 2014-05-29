@@ -8,26 +8,27 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # All Vagrant configuration is done here. The most common configuration
   # options are documented and commented below. For a complete reference,
   # please see the online documentation at vagrantup.com.
-
 {% for host in groups['all']: %}
 {% if host != 'localhost':
 %}
-  config.vm.define "{{host}}.{{vagrant_dev_tld}}" do |{{host|replace('.','_')}}|
-  {{host|replace('.','_')}}.vm.hostname = "{{host}}.{{vagrant_dev_tld}}"
-  {{host|replace('.','_')}}.vm.network "private_network", ip: "{{vagrant_dev_ip_network}}.{{loop.index0 + vagrant_dev_ip_first}}"
+{% set vmname = host|replace('.','_')|replace('-','_') %}
+  config.vm.define "{{host}}.{{vagrant_dev_tld}}" do |{{vmname}}|
+  {{vmname}}.vm.hostname = "{{host}}.{{vagrant_dev_tld}}"
+  {{vmname}}.vm.network "private_network", ip: "{{vagrant_dev_ip_network}}.{{loop.index0 + vagrant_dev_ip_first}}"
   {% if vagrant_dev_boxes[host] is defined: %}
-  {{host|replace('.','_')}}.vm.box = "{{vagrant_dev_boxes[host]}}"
+  {{vmname}}.vm.box = "{{vagrant_dev_boxes[host]}}"
   {% endif %}
   end
 {% endif %}
 {% endfor %}
 
 {% for host in vagrant_dev_additional_vms: %}
-  config.vm.define "{{host.name}}.{{vagrant_dev_tld}}" do |{{host.name|replace('.','_')}}|
-  {{host.name|replace('.','_')}}.vm.hostname = "{{host.name}}.{{vagrant_dev_tld}}"
-  {{host.name|replace('.','_')}}.vm.network "private_network", ip: "{{vagrant_dev_additional_ip_network}}.{{loop.index0 + vagrant_dev_additional_ip_first}}"
+{% set vmname = host|replace('.','_')|replace('-','_') %}
+  config.vm.define "{{host.name}}.{{vagrant_dev_tld}}" do |{{vmname}}|
+  {{vmname}}.vm.hostname = "{{host.name}}.{{vagrant_dev_tld}}"
+  {{vmname}}.vm.network "private_network", ip: "{{vagrant_dev_additional_ip_network}}.{{loop.index0 + vagrant_dev_additional_ip_first}}"
   {% if vagrant_dev_boxes[host.name] is defined: %}
-  {{host.name|replace('.','_')}}.vm.box = "{{vagrant_dev_boxes[host.name]}}"
+  {{vmname}}.vm.box = "{{vagrant_dev_boxes[host.name]}}"
   {% endif %}
   end
 {% endfor %}
