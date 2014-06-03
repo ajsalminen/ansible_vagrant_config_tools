@@ -23,7 +23,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 {% endfor %}
 
 {% for host in vagrant_dev_additional_vms: %}
-{% set vmname = host|replace('.','_')|replace('-','_') %}
+{% set vmname = host.name|replace('.','_')|replace('-','_') %}
   config.vm.define "{{host.name}}.{{vagrant_dev_tld}}" do |{{vmname}}|
   {{vmname}}.vm.hostname = "{{host.name}}.{{vagrant_dev_tld}}"
   {{vmname}}.vm.network "private_network", ip: "{{vagrant_dev_additional_ip_network}}.{{loop.index0 + vagrant_dev_additional_ip_first}}"
@@ -34,6 +34,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 {% endfor %}
 
 
+  config.ssh.forward_agent = true
   # Every Vagrant virtual environment requires a box to build off of.
   config.vm.box = "{{vagrant_dev_default_box}}"
   # config.vm.box = "puppetlabs/debian-6.0.9-64-nocm"
@@ -150,6 +151,11 @@ config.vm.provision "ansible" do |ansible|
     ansible.ask_vault_pass = true
     ansible.sudo = true
     ansible.raw_arguments = ['--timeout=30']
+    ansible.host_key_checking = false
+    ansible.raw_ssh_args = ['-o UserKnownHostsFile=/dev/null']
+    ansible.extra_vars = { ansible_ssh_user: 'vagrant',
+                 ansible_connection: 'ssh',
+                  }
   end
 
 end
