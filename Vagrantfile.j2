@@ -18,6 +18,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   {% if vagrant_dev_boxes[host] is defined: %}
   {{vmname}}.vm.box = "{{vagrant_dev_boxes[host]}}"
   {% endif %}
+  {{vmname}}.vm.synced_folder "shared/{{vmname}}/", "/srv/sites", create:true
   end
 {% endif %}
 {% endfor %}
@@ -30,6 +31,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   {% if vagrant_dev_boxes[host.name] is defined: %}
   {{vmname}}.vm.box = "{{vagrant_dev_boxes[host.name]}}"
   {% endif %}
+  {{vmname}}.vm.synced_folder "shared/{{vmname}}/", "/srv/sites", create:true
   end
 {% endfor %}
 
