@@ -23,64 +23,7 @@
       with_indexed_items: groups['all']
 
 
-    - name: Add vagrant hosts to local /etc/hosts
-      local_action: >
-        lineinfile
-        state=present
-        dest=/etc/hosts
-        regexp='^(?:[0-9]{1,3}\.){3}[0-9]{1,3} {{item.1}}\.{{vagrant_dev_tld}}$'
-        line="{{vagrant_dev_ip_network}}.{{item.0 + vagrant_dev_ip_first}} {{item.1}}.{{vagrant_dev_tld}} www.{{item.1}}.{{vagrant_dev_tld}}"
-      sudo: yes
-      with_indexed_items: groups['all']
-
-    - name: Add vagrant hosts to local /etc/hosts
-      local_action: >
-        lineinfile
-        state=present
-        dest=/etc/hosts
-        regexp='^(?:[0-9]{1,3}\.){3}[0-9]{1,3} {{item.1.name}}\.{{vagrant_dev_tld}}$'
-        line="{{vagrant_dev_additional_ip_network}}.{{item.0 + vagrant_dev_additional_ip_first}} {{item.1.name}}.{{vagrant_dev_tld}} www.{{item.1.name}}.{{vagrant_dev_tld}}"
-      sudo: yes
-      with_indexed_items: vagrant_dev_additional_vms
-
-    - name: Ensure hosts fragment file exists
-      local_action: >
-        file
-        path=./hosts.d/20_hosts.j2
-        state=touch
-      sudo: no
-
-    - name: Add vagrant hosts to a hosts fragment file
-      local_action: >
-        lineinfile
-        state=present
-        dest=./hosts.d/20_hosts.j2
-        regexp='^(?:[0-9]{1,3}\.){3}[0-9]{1,3} {{item.1}}\.{{vagrant_dev_tld}}$'
-        line="{{vagrant_dev_ip_network}}.{{item.0 + vagrant_dev_ip_first}} {{item.1}}.{{vagrant_dev_tld}} www.{{item.1}}.{{vagrant_dev_tld}}"
-      sudo: yes
-      with_indexed_items: groups['all']
-
-    - name: Add additional vagrant hosts to fragment file
-      local_action: >
-        lineinfile
-        state=present
-        dest=./hosts.d/20_hosts.j2
-        regexp='^(?:[0-9]{1,3}\.){3}[0-9]{1,3} {{item.1.name}}\.{{vagrant_dev_tld}}$'
-        line="{{vagrant_dev_additional_ip_network}}.{{item.0 + vagrant_dev_additional_ip_first}} {{item.1.name}}.{{vagrant_dev_tld}} www.{{item.1.name}}.{{vagrant_dev_tld}}"
-      sudo: yes
-      with_indexed_items: vagrant_dev_additional_vms
-
-    - name: Assemble hosts template
-      local_action: >
-        assemble
-        src=./hosts.d
-        dest=./hosts.j2
-
-    - name: Install /etc/vagrant_hosts for completion
-      shell: cut -f 2 -d ' ' ./hosts.d/20_hosts.j2 > /etc/vagrant_hosts
-      sudo: yes
-
-
+    # - include: etc_hosts.yml
 
     - name: Write vagrantfile for hosts
       local_action: >
@@ -99,11 +42,21 @@
         - vagrant_dev_additional_vms
         - groups
 
+    - name: Add additional vms along with their ip to inventory
+      lineinfile:
+        dest=./inventory
+        regexp='^{{item.1.name}}.local ansible_ssh_host=[0-9]{1,3}\.{3}[0-9]{1,3}$'
+        line='{{item.1.name}}.local ansible_ssh_host={{vagrant_dev_additional_ip_network}}.{{item.0 + vagrant_dev_additional_ip_first}}'
+        insertbefore=BOF
+      # debug: msg="{{item}}"
+      with_indexed_items: vagrant_dev_additional_vms
+
+
     - name: Insert additional vms to inventory
       lineinfile:
         dest: ./inventory
         insertafter: '^\[{{item.1}}\]'
-        line: "{{item.0.name}}.{{vagrant_dev_tld}} server_override_hosts={{hosts_file_path}} # group: {{item.1}}"
+        line: "{{item.0.name}}.{{vagrant_dev_tld}}  server_override_hosts={{hosts_file_path}} # group: {{item.1}}"
       with_subelements:
         - vagrant_dev_additional_vms
         - groups

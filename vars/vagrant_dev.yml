@@ -3,14 +3,18 @@ vagrant_dev_ip_network: 192.168.33
 vagrant_dev_ip_first: 2
 vagrant_dev_additional_ip_network: 192.168.34
 vagrant_dev_additional_ip_first: 2
+vagrant_dev_production_playbook: ~/projektit/ansible/kifi-playbooks/
 vagrant_dev_production_inventory: ~/projektit/ansible/kifi-playbooks/production
 vagrant_dev_inventory: inventory
-vagrant_dev_tld: test # See http://tools.ietf.org/html/rfc2606
+vagrant_dev_tld: local # See http://tools.ietf.org/html/rfc2606
 # vagrant_dev_prefix: v
 vagrant_dev_default_box: chef/debian-7.4
 vagrant_dev_playbook_path: /home/anttis/projektit/ansible/kifi-playbooks/site.yml
 vagrant_dev_boxes:
   okariino.fi: puppetlabs/debian-6.0.9-64-nocm
+  kifi1.kirjastot.fi: puppetlabs/debian-6.0.9-64-nocm
+  api.kirjasampo.fi: puppetlabs/debian-6.0.9-64-nocm
+
 vagrant_dev_additional_vms:
   - name: mail2.kirjastot.fi
     groups:
@@ -20,5 +24,44 @@ vagrant_dev_additional_vms:
     groups:
       - servers
       - mail
+  - name: d8dev
+    groups:
+      - servers
+      - mysql-servers
+      - php-servers
+      - d8dev
+  - name: d8prof
+    groups:
+      - servers
+      - mysql-servers
+      - php-servers
+      - d8prof
+  - name: d8secondprof
+    groups:
+      - servers
+      - mysql-servers
+      - php-servers
+      - d8prof
+  - name: smallsites-test
+    groups:
+      - servers
+      - mysql-servers
+      - php-servers
+      - smallsites
+
       # - nagios-ssh-monitored
+  - name: tpankki-dev
+    groups:
+      - servers
+      - mysql-servers
+      - tpankki
+      - php-servers
+  - name: tpankki-stag
+    groups:
+      - servers
+      - mysql-servers
+      - tpankki
+      - php-servers
+
+
 hosts_file_path: /home/anttis/projektit/vagrant/vagrant_ansible_dev/hosts.j2

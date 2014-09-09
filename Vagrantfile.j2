@@ -158,7 +158,6 @@ config.vm.provision "ansible" do |ansible|
     ansible.playbook = "{{vagrant_dev_playbook_path}}"
     #ansible.verbose = 'vvvv'
     ansible.inventory_path = 'inventory'
-    ansible.ask_vault_pass = true
     ansible.sudo = true
     ansible.raw_arguments = ['--timeout=30']
     ansible.host_key_checking = false
