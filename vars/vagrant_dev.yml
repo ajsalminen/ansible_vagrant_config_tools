@@ -11,10 +11,10 @@ vagrant_dev_tld: local # See http://tools.ietf.org/html/rfc2606
 vagrant_dev_default_box: chef/debian-7.4
 vagrant_dev_playbook_path: /home/anttis/projektit/ansible/kifi-playbooks/site.yml
 vagrant_dev_boxes:
-  okariino.fi: box-cutter/debian6010
-  kifi1.kirjastot.fi: box-cutter/debian6010
-  api.kirjasampo.fi: box-cutter/debian6010
-  testi.kirjastot.fi: box-cutter/debian6010
+  okariino.fi: chef/debian-6.0.10
+  kifi1.kirjastot.fi: chef/debian-6.0.10
+  api.kirjasampo.fi: chef/debian-6.0.10
+  testi.kirjastot.fi: chef/debian-6.0.10
 
 vagrant_dev_additional_vms:
   - name: mail2.kirjastot.fi
@@ -73,3 +73,4 @@ vagrant_dev_additional_vms:
     groups:
       - widget-proxy
 hosts_file_path: /home/anttis/projektit/vagrant/vagrant_ansible_dev/hosts.j2
+
