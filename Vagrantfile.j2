@@ -164,7 +164,8 @@ config.vm.provision "ansible" do |ansible|
     ansible.raw_ssh_args = ['-o UserKnownHostsFile=/dev/null']
     ansible.extra_vars = { ansible_ssh_user: 'vagrant',
                  ansible_connection: 'ssh',
-                 wp_content_sync: true,
+                 site_content_sync: true,
+                 ansible_pull_enabled: true,
                   }
   end
 
