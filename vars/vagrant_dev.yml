@@ -12,6 +12,7 @@ vagrant_dev_default_box: chef/debian-7.4
 vagrant_dev_playbook_path: /home/anttis/projektit/ansible/kifi-playbooks/site.yml
 vagrant_dev_boxes:
   okariino.fi: chef/debian-6.0.10
+  kirjat.okariino.fi: chef/debian-6.0.10
   kifi1.kirjastot.fi: chef/debian-6.0.10
   api.kirjasampo.fi: chef/debian-6.0.10
   testi.kirjastot.fi: chef/debian-6.0.10
